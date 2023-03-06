@@ -70,9 +70,9 @@ export function isMillerPrime(p: number, k: number) {
 
 // Generates a random long integer, prime by Miller's test
 export function randomPrimeNumberBySize(lowSize: number, upSize: number, k: number): number {
-  let potentialPrime = 0;
+  let potentialPrime = pickLargeNumber(Math.pow(2, lowSize - 1), Math.pow(2, upSize) - 1);
 
-  while (isMillerPrime(potentialPrime, k)) {
+  while (!isMillerPrime(potentialPrime, k)) {
     potentialPrime = pickLargeNumber(Math.pow(2, lowSize - 1), Math.pow(2, upSize) - 1);
   }
 
