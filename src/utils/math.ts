@@ -78,3 +78,18 @@ export function randomPrimeNumberBySize(lowSize: number, upSize: number, k: numb
 
   return potentialPrime;
 }
+
+interface ExtendedGCD {
+  gcd: number;
+  u: number;
+  v: number;
+}
+export function extendedGCD(s: number, t: number): ExtendedGCD {
+  if (s === 0) {
+    return { gcd: t, u: 0, v: 1 };
+  }
+  const { gcd, u, v } = extendedGCD(t % s, s);
+  const uFinal = v - Math.floor(t / s) * u;
+  const vFinal = u;
+  return { gcd: gcd, u: uFinal, v: vFinal };
+}
