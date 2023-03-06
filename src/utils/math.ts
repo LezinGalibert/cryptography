@@ -19,7 +19,7 @@ export function modpow(a: number, m: number, n: number): number {
 // - a^d mod p != 1
 // - a^(2^r)d mod p != -1 for r < b (integer)
 // If a is a Miller's witness for p, then p is not prime.
-export function millerWitness(a: number, b: number, d: number, p: number) {
+function millerWitness(a: number, b: number, d: number, p: number): boolean {
   let x = modpow(a, d, p);
   if (x === 1) {
     return false;
@@ -36,7 +36,7 @@ export function millerWitness(a: number, b: number, d: number, p: number) {
   return true;
 }
 
-export function pickLargeNumber(low: number, up: number) {
+function pickLargeNumber(low: number, up: number): number {
   return Math.floor((up - low + 1) * Math.random()) + low;
 }
 
@@ -65,4 +65,5 @@ export function isMillerPrime(p: number, k: number) {
       return false;
     }
   }
+  return true;
 }

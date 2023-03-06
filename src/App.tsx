@@ -1,35 +1,35 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import './App.css'
-import { increment } from './utils/math'
+import { useCallback, useState } from 'react';
+import './App.css';
+import { isMillerPrime } from './utils/math';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [prime, setPrime] = useState(0);
+  const [precision, setPrecision] = useState(10);
+  const [hasConfirmed, setHasConfirmed] = useState(false);
+  const [isPrime, setIsPrime] = useState(false);
+
+  const renderResult = useCallback(() => {
+    return hasConfirmed ? <h1>{isPrime ? `${prime} is prime` : `${prime} is not prime`}</h1> : null;
+  }, [isPrime, hasConfirmed]);
 
   return (
     <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => increment(count))}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <form
+        onSubmit={(event) => {
+          setIsPrime(isMillerPrime(prime, precision));
+          setHasConfirmed(true);
+          event.preventDefault();
+        }}>
+        <h1>Use Miller test to check if your input is prime!</h1>
+        <div className="card">
+          <input type="text" name="Pick your number" value={prime} onChange={(e) => setPrime(+e.target.value)} />
+          <input type="text" name="Set a precision" value={precision} onChange={(e) => setPrecision(+e.target.value)} />
+        </div>
+        <button type="submit">Submit</button>
+      </form>
+      {renderResult()}
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
