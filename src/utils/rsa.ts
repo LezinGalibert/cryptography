@@ -1,5 +1,6 @@
-import { extendedGCD, modpow, pickLargeNumber } from './math';
+import { extendedGCD, modpow, pickLargeNumber, randomPrimeNumberBySize } from './math';
 
+type Key = { exponent: number; modulus: number };
 // Generates a pair of public and secret keys using the RSA method
 export function generateKeyValues(p: number, q: number) {
   const n = p * q;
@@ -13,7 +14,7 @@ export function generateKeyValues(p: number, q: number) {
   if (u <= 0) {
     u += t; //Ensures that we always have positif keys
   }
-  return { pKey: { s, n }, sKey: { u, n } };
+  return { pKey: { exponent: s, modulus: n }, sKey: { exponent: u, modulus: n } };
 }
 
 export function encryptString(str: string, s: number, n: number) {
@@ -28,4 +29,26 @@ export function encryptString(str: string, s: number, n: number) {
 export function decryptArray(arr: number[], u: number, n: number) {
   const newArr = arr.map((item) => modpow(item, u, n) + 'a'.charCodeAt(0));
   return newArr.map((item) => String.fromCharCode(item)).join('');
+}
+
+export function initKeyPair(lowerSize: number, upperSize: number, k = 5000) {
+  const p = randomPrimeNumberBySize(lowerSize, upperSize, k);
+  let q = randomPrimeNumberBySize(lowerSize, upperSize, k);
+
+  while (p === q) {
+    q = randomPrimeNumberBySize(lowerSize, upperSize, k);
+  }
+
+  return generateKeyValues(p, q);
+}
+
+export function writeKey(key: Key) {
+  return `(${key.exponent.toString(16)},${key.modulus.toString(16)})`;
+}
+
+export function readKey(str: string) {
+  const regex = /\(|,|\)/;
+  const res = str.split(regex);
+
+  return { exponent: parseInt(res[1], 16), modulus: parseInt(res[2], 16) };
 }
