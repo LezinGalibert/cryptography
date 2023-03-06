@@ -36,7 +36,7 @@ function millerWitness(a: number, b: number, d: number, p: number): boolean {
   return true;
 }
 
-function pickLargeNumber(low: number, up: number): number {
+export function pickLargeNumber(low: number, up: number): number {
   return Math.floor((up - low + 1) * Math.random()) + low;
 }
 
