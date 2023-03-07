@@ -1,23 +1,43 @@
-export class Cell<T> {
+class Node<T> {
   data: T;
-  next: Cell<T> | undefined;
+  next: Node<T> | undefined;
 
   constructor(data: T) {
     this.data = data;
   }
 
   addToHead(data: T) {
-    this.next = new Cell(data);
+    this.next = new Node(data);
   }
+}
 
-  static readKeys<T>(key: T[]) {
-    const head = new Cell(key[0]);
-    let tmp = head as Cell<T> | undefined;
-    key.slice(1).forEach((k) => {
+export class Cell<T> {
+  head: Node<T> | undefined;
+
+  constructor(data: T[]) {
+    const head = data ? new Node(data[0]) : undefined;
+    let tmp = head;
+    data.slice(1).forEach((k) => {
       tmp?.addToHead(k);
       tmp = tmp?.next;
     });
+    this.head = head;
+  }
 
-    return head;
+  delete<T>(node: Node<T>) {
+    const nodeStr = JSON.stringify(node);
+    let tmp = this.head;
+
+    if (JSON.stringify(tmp) === nodeStr) {
+      tmp = tmp?.next;
+      this.head = tmp;
+    } else {
+      while (tmp?.next && JSON.stringify(tmp?.next) !== nodeStr) {
+        tmp = tmp.next;
+      }
+      if (tmp?.next) {
+        tmp.next = tmp.next.next;
+      }
+    }
   }
 }

@@ -1,3 +1,4 @@
+import { Cell } from './utils/cell';
 import { pickRandomNumber, randomPrimePairBySize } from './utils/math';
 import { initProtected, Protected } from './utils/protected';
 import { generateKeyValues, Key, writeKey } from './utils/rsa';

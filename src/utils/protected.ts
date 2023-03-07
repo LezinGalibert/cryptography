@@ -1,3 +1,4 @@
+import { Cell } from './cell';
 import { decryptArray, Key, readKey, writeKey } from './rsa';
 import { readSignature, Signature, writeSignature } from './signature';
 
@@ -16,4 +17,19 @@ export function writeProtected(prot: Protected) {
 export function readProtected(str: string): Protected {
   const items = str.split(' ');
   return { pKey: readKey(items[0]), message: items[1], signature: readSignature(items[2]) };
+}
+
+export function readProtectedCellList(protList: Protected[]): Cell<Protected> {
+  return new Cell(protList);
+}
+
+export function sanitizeDeclarations(declarations: Cell<Protected>) {
+  let currentHead = declarations.head;
+  while (currentHead) {
+    if (!verifyProtected(currentHead.data)) {
+      const tmp = currentHead;
+      declarations.delete(tmp);
+    }
+    currentHead = currentHead.next;
+  }
 }
