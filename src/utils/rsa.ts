@@ -1,6 +1,6 @@
 import { extendedGCD, modpow, pickLargeNumber, randomPrimeNumberBySize } from './math';
 
-type Key = { exponent: number; modulus: number };
+export type Key = { exponent: number; modulus: number };
 // Generates a pair of public and secret keys using the RSA method
 export function generateKeyValues(p: number, q: number) {
   const n = p * q;
@@ -17,17 +17,17 @@ export function generateKeyValues(p: number, q: number) {
   return { pKey: { exponent: s, modulus: n }, sKey: { exponent: u, modulus: n } };
 }
 
-export function encryptString(str: string, s: number, n: number) {
+export function encryptString(str: string, key: Key) {
   const encodedArray: number[] = [];
 
   for (let i = 0; i < str.length; i++) {
-    encodedArray.push(modpow(str.charCodeAt(i) - 'a'.charCodeAt(0), s, n));
+    encodedArray.push(modpow(str.charCodeAt(i) - 'a'.charCodeAt(0), key.exponent, key.modulus));
   }
   return encodedArray;
 }
 
-export function decryptArray(arr: number[], u: number, n: number) {
-  const newArr = arr.map((item) => modpow(item, u, n) + 'a'.charCodeAt(0));
+export function decryptArray(arr: number[], key: Key) {
+  const newArr = arr.map((item) => modpow(item, key.exponent, key.modulus) + 'a'.charCodeAt(0));
   return newArr.map((item) => String.fromCharCode(item)).join('');
 }
 
