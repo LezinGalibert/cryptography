@@ -2,26 +2,24 @@
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
+}
+
+.form {
   text-align: center;
 }
 
-.card {
-  padding: 2em;
+.itemPair {
   display: flex;
-  flex-direction: column;
-}
-
-.horizontal {
   flex-direction: row;
+  justify-content: space-evenly;
 }
 
-.vertical {
+.itemWithHeader {
+  display: flex;
   flex-direction: column;
 }
 
 .table {
-  border: 1px black;
   display: flex;
-  align-self: center;
-  flex-direction: row;
+  justify-content: space-evenly;
 }

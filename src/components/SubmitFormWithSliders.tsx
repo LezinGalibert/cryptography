@@ -19,38 +19,42 @@ export const SubmitFormWithSliders = React.memo(() => {
 
   return (
     <form
+      className="form"
       onSubmit={(e) => {
         onSubmit();
         e.preventDefault();
       }}>
       <h1>Give me sizes and I'll give you a prime between those sizes</h1>
       <div className="card">
-        <div className="horizontal">
-          <p>{`Lower size: ${lowBound}`}</p>
-          <input
-            type="range"
-            name="Pick a lower size"
-            min={1}
-            max={7}
-            value={lowBound}
-            onChange={(e) => {
-              setHasSubmitted(false);
-              setLowBound(Math.min(+e.target.value, upBound));
-            }}
-          />
-
-          <p>{`Upper size: ${upBound}`}</p>
-          <input
-            type="range"
-            name="Pick a higher size"
-            min={2}
-            max={7}
-            value={upBound}
-            onChange={(e) => {
-              setHasSubmitted(false);
-              setUpBound(Math.max(+e.target.value, lowBound));
-            }}
-          />
+        <div className="itemPair">
+          <div className="itemWithHeader">
+            <p>{`Lower size: ${lowBound}`}</p>
+            <input
+              type="range"
+              name="Pick a lower size"
+              min={1}
+              max={7}
+              value={lowBound}
+              onChange={(e) => {
+                setHasSubmitted(false);
+                setLowBound(Math.min(+e.target.value, upBound));
+              }}
+            />
+          </div>
+          <div className="itemWithHeader">
+            <p>{`Upper size: ${upBound}`}</p>
+            <input
+              type="range"
+              name="Pick a higher size"
+              min={2}
+              max={7}
+              value={upBound}
+              onChange={(e) => {
+                setHasSubmitted(false);
+                setUpBound(Math.max(+e.target.value, lowBound));
+              }}
+            />
+          </div>
         </div>
       </div>
       <button type="submit">Submit</button>

@@ -18,7 +18,7 @@ export const DeclarationTable = React.memo(() => {
 
   const renderTable = useCallback(() => {
     return hasSubmitted ? (
-      <table>
+      <table className="table">
         <td>
           <th>Public Key</th>
           {voteDeclarations.map((dec, i) => (
@@ -43,33 +43,42 @@ export const DeclarationTable = React.memo(() => {
 
   return (
     <form
+      className="form"
       onSubmit={(e) => {
         onSubmit();
         e.preventDefault();
       }}>
       <h1>How many voters and how many candidates</h1>
-      <input
-        type="number"
-        name="Select the number of voters"
-        value={votes}
-        onChange={(e) => {
-          if (votes > candidates) {
-            setHasSubmitted(false);
-            setVotes(+e.target.value);
-          }
-        }}
-      />
-      <input
-        type="number"
-        name="Select the number of candidates"
-        value={candidates}
-        onChange={(e) => {
-          if (votes > candidates) {
-            setHasSubmitted(false);
-            setCandidates(+e.target.value);
-          }
-        }}
-      />
+      <div className="itemPair">
+        <div className="itemWithHeader">
+          <p>Number of voters</p>
+          <input
+            type="number"
+            name="Select the number of voters"
+            value={votes}
+            onChange={(e) => {
+              if (votes > candidates) {
+                setHasSubmitted(false);
+                setVotes(+e.target.value);
+              }
+            }}
+          />
+        </div>
+        <div className="itemWithHeader">
+          <p>Number of candidates</p>
+          <input
+            type="number"
+            name="Select the number of candidates"
+            value={candidates}
+            onChange={(e) => {
+              if (votes > candidates) {
+                setHasSubmitted(false);
+                setCandidates(+e.target.value);
+              }
+            }}
+          />
+        </div>
+      </div>
       <button type="submit">Show declarations!</button>
       {renderTable()}
     </form>
