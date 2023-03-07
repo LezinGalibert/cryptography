@@ -33,7 +33,7 @@ export function generateVoteDeclarations(votes: number, candidates: number): Pro
   }
 
   const protectedDeclarations = voteArr.map((vote) => {
-    const selectedCandidate = writeKey(candidateArr[pickRandomNumber(0, candidates)]);
+    const selectedCandidate = writeKey(candidateArr[pickRandomNumber(0, candidates - 1)]);
     const signature = initSignature(selectedCandidate, vote.sKey);
     return initProtected(vote.pKey, selectedCandidate, signature);
   });

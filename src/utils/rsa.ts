@@ -21,13 +21,13 @@ export function encryptString(str: string, key: Key) {
   const encodedArray: number[] = [];
 
   for (let i = 0; i < str.length; i++) {
-    encodedArray.push(modpow(str.charCodeAt(i) - 'a'.charCodeAt(0), key.exponent, key.modulus));
+    encodedArray.push(modpow(str.charCodeAt(i), key.exponent, key.modulus));
   }
   return encodedArray;
 }
 
 export function decryptArray(arr: number[], key: Key) {
-  const newArr = arr.map((item) => modpow(item, key.exponent, key.modulus) + 'a'.charCodeAt(0));
+  const newArr = arr.map((item) => modpow(item, key.exponent, key.modulus));
   return newArr.map((item) => String.fromCharCode(item)).join('');
 }
 
