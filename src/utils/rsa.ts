@@ -1,4 +1,4 @@
-import { extendedGCD, modpow, pickLargeNumber, randomPrimeNumberBySize } from './math';
+import { extendedGCD, modpow, pickRandomNumber, randomPrimeNumberBySize } from './math';
 
 export type Key = { exponent: number; modulus: number };
 // Generates a pair of public and secret keys using the RSA method
@@ -6,9 +6,9 @@ export function generateKeyValues(p: number, q: number) {
   const n = p * q;
   const t = (p - 1) * (q - 1);
 
-  let s = pickLargeNumber(0, t);
+  let s = pickRandomNumber(0, t);
   while (extendedGCD(s, t).gcd !== 1) {
-    s = pickLargeNumber(0, t);
+    s = pickRandomNumber(0, t);
   }
   let { u } = extendedGCD(s, t);
   if (u <= 0) {

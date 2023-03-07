@@ -32,7 +32,7 @@ function millerWitness(a: number, b: number, d: number, p: number): boolean {
   return true;
 }
 
-export function pickLargeNumber(low: number, up: number): number {
+export function pickRandomNumber(low: number, up: number): number {
   return Math.floor((up - low + 1) * Math.random()) + low;
 }
 
@@ -56,7 +56,7 @@ export function isMillerPrime(p: number, k: number) {
   let a = 0;
 
   for (let i = 0; i < k; i++) {
-    a = pickLargeNumber(2, p - 1);
+    a = pickRandomNumber(2, p - 1);
     if (millerWitness(a, b, d, p)) {
       return false;
     }
@@ -66,10 +66,10 @@ export function isMillerPrime(p: number, k: number) {
 
 // Generates a random long integer, prime by Miller's test
 export function randomPrimeNumberBySize(lowSize: number, upSize: number, k: number): number {
-  let potentialPrime = pickLargeNumber(Math.pow(2, lowSize - 1), Math.pow(2, upSize) - 1);
+  let potentialPrime = pickRandomNumber(Math.pow(2, lowSize - 1), Math.pow(2, upSize) - 1);
 
   while (!isMillerPrime(potentialPrime, k)) {
-    potentialPrime = pickLargeNumber(Math.pow(2, lowSize - 1), Math.pow(2, upSize) - 1);
+    potentialPrime = pickRandomNumber(Math.pow(2, lowSize - 1), Math.pow(2, upSize) - 1);
   }
 
   return potentialPrime;
