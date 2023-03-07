@@ -1,15 +1,9 @@
-import { randomPrimeNumberBySize } from '../src/utils/math';
+import { randomPrimePairBySize } from '../src/utils/math';
 import { initProtected, readProtected, verifyProtected, writeProtected } from '../src/utils/protected';
 import { generateKeyValues } from '../src/utils/rsa';
 import { initSignature, readSignature, writeSignature } from '../src/utils/signature';
 
-const p = randomPrimeNumberBySize(3, 7, 5000);
-let q = randomPrimeNumberBySize(3, 7, 5000);
-
-while (p === q) {
-  q = randomPrimeNumberBySize(3, 7, 5000);
-}
-
+const [p, q] = randomPrimePairBySize(3, 7, 5000);
 const { pKey, sKey } = generateKeyValues(p, q);
 
 const message = 'Hello';

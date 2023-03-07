@@ -1,7 +1,3 @@
-export function increment(value: number, incr = 1) {
-  return value + incr;
-}
-
 // Recursively calculates a^m mod n
 export function modpow(a: number, m: number, n: number): number {
   if (m === 0) {
@@ -77,6 +73,17 @@ export function randomPrimeNumberBySize(lowSize: number, upSize: number, k: numb
   }
 
   return potentialPrime;
+}
+
+export function randomPrimePairBySize(lowSize: number, upSize: number, k: number) {
+  const p = randomPrimeNumberBySize(lowSize, upSize, k);
+  let q = randomPrimeNumberBySize(lowSize, upSize, k);
+
+  while (p === q) {
+    q = randomPrimeNumberBySize(lowSize, upSize, k);
+  }
+
+  return [p, q];
 }
 
 interface ExtendedGCD {

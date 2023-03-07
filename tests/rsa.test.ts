@@ -1,13 +1,7 @@
-import { randomPrimeNumberBySize } from '../src/utils/math';
+import { randomPrimePairBySize } from '../src/utils/math';
 import { decryptArray, encryptString, generateKeyValues, readKey, writeKey } from '../src/utils/rsa';
 
-const p = randomPrimeNumberBySize(3, 7, 5000);
-let q = randomPrimeNumberBySize(3, 7, 5000);
-
-while (p === q) {
-  q = randomPrimeNumberBySize(3, 7, 5000);
-}
-
+const [p, q] = randomPrimePairBySize(3, 7, 5000);
 const { pKey, sKey } = generateKeyValues(p, q);
 
 it('Verify that decrypting and encrypting are inverse', () => {
