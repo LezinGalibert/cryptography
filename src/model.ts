@@ -1,8 +1,10 @@
 import { Cell } from './utils/cell';
+import { HashTable } from './utils/hashTable';
 import { pickRandomNumber, randomPrimePairBySize } from './utils/math';
 import { initProtected, Protected } from './utils/protected';
-import { generateKeyValues, Key, writeKey } from './utils/rsa';
+import { generateKeyValues, Key, readKey, writeKey } from './utils/rsa';
 import { initSignature } from './utils/signature';
+import * as fs from 'fs';
 
 function selectRandomIndices(lowerBound: number, upperBound: number, nIndices: number) {
   const shuffleArray = (array: number[]) => {
@@ -40,4 +42,28 @@ export function generateVoteDeclarations(votes: number, candidates: number): Pro
   });
 
   return protectedDeclarations;
+}
+
+export function computeWinner(
+  decl: Cell<Protected>,
+  sizeC: number,
+  candidates: Cell<Key>,
+  sizeV: number,
+  voters: Cell<Key>,
+) {
+  const hashC = new HashTable(sizeC);
+  hashC.initHashTable(candidates);
+  const hashV = new HashTable(sizeV);
+  hashV.initHashTable(voters);
+
+  let head = decl.head;
+  while (head) {
+    if (hashV.getHashCellForKey(head.data.pKey)?.val === 0) {
+      hashV.updateCellForKey(head.data.pKey);
+      hashC.updateCellForKey(readKey(head.data.message));
+    }
+    head = head.next;
+  }
+
+  return hashC.findMax();
 }

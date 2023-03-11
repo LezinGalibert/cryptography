@@ -1,7 +1,10 @@
 import React, { useCallback, useState } from 'react';
-import { generateVoteDeclarations } from '../model';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { computeWinner, generateVoteDeclarations } from '../model';
+import { Cell } from '../utils/cell';
 import { Protected } from '../utils/protected';
-import { writeKey } from '../utils/rsa';
+import { readKey, writeKey } from '../utils/rsa';
 import { writeSignature } from '../utils/signature';
 
 export const DeclarationTable = React.memo(() => {
@@ -12,8 +15,26 @@ export const DeclarationTable = React.memo(() => {
 
   const onSubmit = useCallback(() => {
     const declarations = generateVoteDeclarations(votes, candidates);
+    const decl = new Cell(declarations);
+    const cand = new Cell(declarations.map((d) => readKey(d.message)));
+    const vt = new Cell(declarations.map((d) => d.pKey));
+    const [nVotes, winner] = computeWinner(decl, candidates, cand, votes, vt);
+
+    const showToast = () =>
+      toast.success(`The winner is ${winner} with ${nVotes} votes`, {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
+      });
+
     setVoteDeclaration(declarations);
     setHasSubmitted(true);
+    showToast();
   }, [votes, candidates]);
 
   const renderTable = useCallback(() => {
@@ -26,7 +47,7 @@ export const DeclarationTable = React.memo(() => {
           ))}
         </td>
         <td>
-          <th>Secret Key</th>
+          <th>Candidate Key</th>
           {voteDeclarations.map((dec, i) => (
             <tr key={i}>{dec.message}</tr>
           ))}
