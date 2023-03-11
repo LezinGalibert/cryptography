@@ -25,8 +25,15 @@ export function generateVoteDeclarations(votes: number, candidates: number): Pro
   const voteArr: { pKey: Key; sKey: Key }[] = [];
   const candidateArr: Key[] = [];
 
+  const blockDuplicate = new Set<string>();
+
   for (let i = 0; i < votes; i++) {
-    voteArr.push(generateKeyValues(p, q));
+    const newKeyPair = generateKeyValues(p, q);
+    const keyStr = writeKey(newKeyPair.pKey);
+    if (!(keyStr in blockDuplicate)) {
+      blockDuplicate.add(keyStr);
+      voteArr.push(newKeyPair);
+    }
   }
 
   const shuffledIndices = selectRandomIndices(0, votes, candidates);
@@ -65,5 +72,16 @@ export function computeWinner(
     head = head.next;
   }
 
-  return hashC.findMax();
+  return hashC;
+}
+
+export function makeModel(hash: HashTable) {
+  const [winnerKey, winnerVotes] = hash.findMax();
+  return {
+    winnerKey,
+    winnerVotes,
+    results: hash.table.map((c) => {
+      return { candidate: writeKey(c.key), votes: c.val };
+    }),
+  };
 }

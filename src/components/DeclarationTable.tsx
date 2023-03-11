@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { computeWinner, generateVoteDeclarations } from '../model';
+import { computeWinner, generateVoteDeclarations, makeModel } from '../model';
 import { Cell } from '../utils/cell';
 import { Protected } from '../utils/protected';
 import { readKey, writeKey } from '../utils/rsa';
@@ -12,17 +12,20 @@ export const DeclarationTable = React.memo(() => {
   const [candidates, setCandidates] = useState(2);
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const [voteDeclarations, setVoteDeclaration] = useState<Protected[]>([]);
+  const [results, setResults] = useState<{ candidate: string; votes: number }[]>();
 
   const onSubmit = useCallback(() => {
     const declarations = generateVoteDeclarations(votes, candidates);
     const decl = new Cell(declarations);
     const cand = new Cell(declarations.map((d) => readKey(d.message)));
     const vt = new Cell(declarations.map((d) => d.pKey));
-    const [nVotes, winner] = computeWinner(decl, candidates, cand, votes, vt);
+    const model = makeModel(computeWinner(decl, candidates, cand, votes, vt));
+
+    setResults(model.results);
 
     const showToast = () =>
-      toast.success(`The winner is ${winner} with ${nVotes} votes`, {
-        position: 'top-right',
+      toast.success(`The winner is ${model.winnerKey} with ${model.winnerVotes} votes`, {
+        position: 'bottom-center',
         autoClose: 5000,
         hideProgressBar: false,
         closeOnClick: true,
@@ -37,7 +40,7 @@ export const DeclarationTable = React.memo(() => {
     showToast();
   }, [votes, candidates]);
 
-  const renderTable = useCallback(() => {
+  const renderVotes = useCallback(() => {
     return hasSubmitted ? (
       <table className="table">
         <td>
@@ -62,6 +65,25 @@ export const DeclarationTable = React.memo(() => {
     ) : null;
   }, [hasSubmitted, voteDeclarations]);
 
+  const renderResults = useCallback(() => {
+    return hasSubmitted ? (
+      <table className="table">
+        <td>
+          <th>Candidate Key</th>
+          {results?.map((r) => (
+            <tr>{r.candidate}</tr>
+          ))}
+        </td>
+        <td>
+          <th>Number of votes</th>
+          {results?.map((r) => (
+            <tr>{r.votes}</tr>
+          ))}
+        </td>
+      </table>
+    ) : null;
+  }, [hasSubmitted, results]);
+
   return (
     <form
       className="form"
@@ -78,10 +100,8 @@ export const DeclarationTable = React.memo(() => {
             name="Select the number of voters"
             value={votes}
             onChange={(e) => {
-              if (votes > candidates) {
-                setHasSubmitted(false);
-                setVotes(+e.target.value);
-              }
+              setHasSubmitted(false);
+              setVotes(+e.target.value);
             }}
           />
         </div>
@@ -92,16 +112,15 @@ export const DeclarationTable = React.memo(() => {
             name="Select the number of candidates"
             value={candidates}
             onChange={(e) => {
-              if (votes > candidates) {
-                setHasSubmitted(false);
-                setCandidates(+e.target.value);
-              }
+              setHasSubmitted(false);
+              setCandidates(+e.target.value);
             }}
           />
         </div>
       </div>
       <button type="submit">Show declarations!</button>
-      {renderTable()}
+      {renderVotes()}
+      {renderResults()}
     </form>
   );
 });
