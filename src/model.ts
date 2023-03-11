@@ -1,10 +1,10 @@
+import { Block } from './utils/block';
 import { Cell } from './utils/cell';
 import { HashTable } from './utils/hashTable';
 import { pickRandomNumber, randomPrimePairBySize } from './utils/math';
 import { initProtected, Protected } from './utils/protected';
 import { generateKeyValues, Key, readKey, writeKey } from './utils/rsa';
 import { initSignature } from './utils/signature';
-import * as fs from 'fs';
 
 function selectRandomIndices(lowerBound: number, upperBound: number, nIndices: number) {
   const shuffleArray = (array: number[]) => {

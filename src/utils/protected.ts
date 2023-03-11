@@ -23,6 +23,16 @@ export function readProtectedCellList(protList: Protected[]): Cell<Protected> {
   return new Cell(protList);
 }
 
+export function writeProtectedCell(prot: Cell<Protected>) {
+  let head = prot.head;
+  let s = '';
+  while (head) {
+    s += writeProtected(head.data);
+    head = head.next;
+  }
+  return s;
+}
+
 export function sanitizeDeclarations(declarations: Cell<Protected>) {
   let currentHead = declarations.head;
   while (currentHead) {
