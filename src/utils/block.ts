@@ -2,6 +2,7 @@ import { Cell } from './cell';
 import { Protected, writeProtectedCell } from './protected';
 import { Key, writeKey } from './rsa';
 import { SHA256, enc } from 'crypto-js';
+import { Tree } from './tree';
 
 export class Block {
   author: Key;
@@ -33,5 +34,18 @@ export class Block {
       this.nonce += 1;
       this.updateHash();
     }
+  }
+
+  static getLongestChain(tree: Tree<Block>) {
+    let declarations = tree.data.votes;
+    let currentChild = tree.firstChild;
+    if (!currentChild) {
+      return declarations;
+    }
+    while (currentChild?.firstChild) {
+      declarations = Cell.mergeSimple(currentChild.data.votes, declarations);
+      currentChild = currentChild.firstChild;
+    }
+    return Cell.mergeSimple(currentChild?.data.votes, declarations);
   }
 }

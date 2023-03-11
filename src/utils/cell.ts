@@ -40,4 +40,17 @@ export class Cell<T> {
       }
     }
   }
+
+  static mergeSimple<T>(a: Cell<T>, b: Cell<T>) {
+    let currentHead = a.head;
+
+    if (!currentHead) {
+      return b;
+    }
+    while (currentHead.next) {
+      currentHead = currentHead.next;
+    }
+    currentHead.next = b.head;
+    return a;
+  }
 }
