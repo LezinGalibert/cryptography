@@ -1,21 +1,21 @@
-export class Tree<T> {
+export class TreeNode<T> {
   data: T;
-  father: Tree<T> | undefined;
-  firstChild: Tree<T> | undefined;
-  nextBrother: Tree<T> | undefined;
+  father: TreeNode<T> | undefined;
+  firstChild: TreeNode<T> | undefined;
+  nextBrother: TreeNode<T> | undefined;
   height = 0;
 
   constructor(data: T) {
     this.data = data;
   }
 
-  updateHeight(child: Tree<T>) {
+  updateHeight(child: TreeNode<T>) {
     const h = this.height;
     this.height = Math.max(h, child.height + 1);
     return h === this.height;
   }
 
-  addChild(child: Tree<T>) {
+  addChild(child: TreeNode<T>) {
     let currentChild = this.firstChild;
     child.father = this;
     if (!currentChild) {
@@ -26,7 +26,12 @@ export class Tree<T> {
       }
       currentChild.nextBrother = child;
     }
-    this.updateHeight(child);
+
+    let newChild = child;
+    while (newChild.father) {
+      newChild.father.updateHeight(newChild);
+      newChild = newChild.father;
+    }
   }
 
   highestChild() {
@@ -51,7 +56,7 @@ export class Tree<T> {
     return currentChild;
   }
 
-  static removeChild<T>(child: Tree<T>) {
+  static removeChild<T>(child: TreeNode<T>) {
     const father = child.father;
     if (father) {
       let currentChild = father.firstChild;

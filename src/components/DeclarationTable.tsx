@@ -1,11 +1,12 @@
 import React, { useCallback, useState } from 'react';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { computeWinner, generateVoteDeclarations, makeModel } from '../model';
+import { computeWinner, generateVoteDeclarations, makeModel, simulateVotingProcess } from '../model';
 import { Cell } from '../utils/cell';
 import { Protected } from '../utils/protected';
 import { readKey, writeKey } from '../utils/rsa';
 import { writeSignature } from '../utils/signature';
+import { BlockTree, TreeData, treeToData } from './BlockTree';
 
 export const DeclarationTable = React.memo(() => {
   const [votes, setVotes] = useState(20);
@@ -13,6 +14,7 @@ export const DeclarationTable = React.memo(() => {
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const [voteDeclarations, setVoteDeclaration] = useState<Protected[]>([]);
   const [results, setResults] = useState<{ candidate: string; votes: number }[]>();
+  const [treeData, setTreeData] = useState<TreeData>();
 
   const onSubmit = useCallback(() => {
     const declarations = generateVoteDeclarations(votes, candidates);
@@ -20,6 +22,9 @@ export const DeclarationTable = React.memo(() => {
     const cand = new Cell(declarations.map((d) => readKey(d.message)));
     const vt = new Cell(declarations.map((d) => d.pKey));
     const model = makeModel(computeWinner(decl, candidates, cand, votes, vt));
+
+    const treeDataModel = treeToData(simulateVotingProcess(200, 3, 5, 10));
+    setTreeData(treeDataModel);
 
     setResults(model.results);
 
@@ -84,6 +89,10 @@ export const DeclarationTable = React.memo(() => {
     ) : null;
   }, [hasSubmitted, results]);
 
+  const renderTree = useCallback(() => {
+    return hasSubmitted && treeData ? <BlockTree treeData={treeData} /> : null;
+  }, [hasSubmitted, treeData]);
+
   return (
     <form
       className="form"
@@ -121,6 +130,7 @@ export const DeclarationTable = React.memo(() => {
       <button type="submit">Show declarations!</button>
       {renderVotes()}
       {renderResults()}
+      {renderTree()}
     </form>
   );
 });

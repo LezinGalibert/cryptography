@@ -23,3 +23,11 @@
   display: flex;
   justify-content: space-evenly;
 }
+
+.redBg {
+  background-color: red;
+}
+
+.blueBg {
+  background-color: blue;
+}

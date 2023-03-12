@@ -2,19 +2,18 @@ import { Cell } from './cell';
 import { Protected, writeProtectedCell } from './protected';
 import { Key, writeKey } from './rsa';
 import { SHA256, enc } from 'crypto-js';
-import { Tree } from './tree';
+import { TreeNode } from './treeNode';
 
 export class Block {
   author: Key;
   votes: Cell<Protected>;
   hash = '';
-  previousHash: string;
+  previousHash = '';
   nonce = 0;
 
-  constructor(author: Key, votes: Cell<Protected>, previousHash: string) {
+  constructor(author: Key, votes: Cell<Protected>) {
     this.author = author;
     this.votes = votes;
-    this.previousHash = previousHash;
   }
 
   write() {
@@ -36,7 +35,12 @@ export class Block {
     }
   }
 
-  static getLongestChain(tree: Tree<Block>) {
+  initialize(previousBlock?: Block) {
+    this.previousHash = previousBlock?.hash ?? '';
+    this.computerProofOfWork(2);
+  }
+
+  static getLongestChain(tree: TreeNode<Block>) {
     let declarations = tree.data.votes;
     let currentChild = tree.firstChild;
     if (!currentChild) {
